@@ -1,3 +1,6 @@
+// Copyright (c) 2016 SIL International
+// This software is licensed under the MIT License (http://opensource.org/licenses/MIT)
+
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -863,32 +866,7 @@ namespace Chorus.sync
 			}
 		}
 
-	   #endregion
+	#endregion
 
-	}
-
-
-
-	public class SyncResults
-	{
-		public bool Succeeded { get; set; }
-
-		/// <summary>
-		/// If if this is true, the client app needs to restart or read in the new stuff
-		/// </summary>
-		public bool DidGetChangesFromOthers { get; set; }
-
-		public Exception ErrorEncountered
-		{
-			get; set;
-		}
-
-		public bool Cancelled { get; set; }
-
-		public SyncResults()
-		{
-			Succeeded = true;
-			DidGetChangesFromOthers = false;
-		}
 	}
 }

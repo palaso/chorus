@@ -392,6 +392,13 @@
     <Compile Include="FileTypeHandlers\ChorusFileTypeHandlerCollection.cs" />
     <Compile Include="notes\EmbeddedMessageContentHandlerRepository.cs" />
     <Compile Include="CloneResult.cs" />
+    <Compile Include="UI\Notes\ChorusNotesDisplaySettings.cs" />
+    <Compile Include="UI\Review\Events.cs" />
+    <Compile Include="Event.cs" />
+    <Compile Include="ChorusSystemSimple.cs" />
+    <Compile Include="UI\Sync\SyncControlModelSimple.cs" />
+    <Compile Include="UI\Sync\SyncUIFeatures.cs" />
+    <Compile Include="sync\SyncResults.cs" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Framework.2.0">
@@ -496,5 +503,9 @@
   </PropertyGroup>
   <ItemGroup>
     <Folder Include="Model\" />
+    <Folder Include="UI\" />
+    <Folder Include="UI\Notes\" />
+    <Folder Include="UI\Review\" />
+    <Folder Include="UI\Sync\" />
   </ItemGroup>
 </Project>
