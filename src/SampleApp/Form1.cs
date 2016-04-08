@@ -59,7 +59,7 @@ namespace SampleApp
 			//Also note that this is not the same name as that used for any given network repository credentials;
 			//Rather, it's the name which will show in the history, and besides Notes that this user makes.
 			_chorusSystem = new ChorusSystem(shoppingListDir);
-			_chorusSystem.DisplaySettings = new ChorusNotesDisplaySettings()
+			_chorusSystem.DisplaySettings = new ChorusNotesSettings()
 			{
 				WritingSystemForNoteLabel = new TestWritingSystem("Algerian"),
 				WritingSystemForNoteContent = new TestWritingSystem("Bradley Hand ITC")
