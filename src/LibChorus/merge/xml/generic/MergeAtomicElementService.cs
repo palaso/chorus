@@ -19,7 +19,7 @@ namespace Chorus.merge.xml.generic
 		/// if <param name="ours"/> is null and <param name="theirs"/> is not null.
 		/// </remarks>
 		/// <returns>'True' if the given elements were 'atomic'. Otherwise 'false'.</returns>
-		internal static void Run(XmlMerger merger, ref XmlNode ours, XmlNode theirs, XmlNode commonAncestor)
+		internal static void Run(XmlMerger merger, XmlNode ourParent, ref XmlNode ours, XmlNode theirs, XmlNode commonAncestor)
 		{
 			if (merger == null)
 				throw new ArgumentNullException("merger"); // Route tested.
@@ -49,7 +49,7 @@ namespace Chorus.merge.xml.generic
 					// They seem to have added a new one.
 					// Route tested (x2).
 					merger.EventListener.ChangeOccurred(new XmlAdditionChangeReport(merger.MergeSituation.PathToFileInRepository, theirs));
-					ours = theirs; // They added it.
+					ReplaceOursWithTheirs(ourParent, ref ours, theirs); // They added it.
 				}
 				else
 				{
@@ -77,7 +77,7 @@ namespace Chorus.merge.xml.generic
 								// Route tested.
 								merger.ConflictOccurred(new BothEditedTheSameAtomicElement(ours.Name,
 									ours, theirs, null, merger.MergeSituation, elementStrategy, merger.MergeSituation.BetaUserId));
-								ours = theirs;
+								ReplaceOursWithTheirs(ourParent, ref ours, theirs);
 							}
 						}
 					}
@@ -111,7 +111,7 @@ namespace Chorus.merge.xml.generic
 																						 commonAncestor,
 																						 merger.MergeSituation, elementStrategy,
 																						 merger.MergeSituation.BetaUserId));
-				ours = theirs;
+				ReplaceOursWithTheirs(ourParent, ref ours, theirs);
 				return;
 			}
 
@@ -168,7 +168,7 @@ namespace Chorus.merge.xml.generic
 					// They edited it. We did nothing.
 					// Route tested (x2).
 					merger.EventListener.ChangeOccurred(new XmlChangedRecordReport(null, null, theirs.ParentNode, theirs));
-					ours = theirs;
+					ReplaceOursWithTheirs(ourParent, ref ours, theirs);
 				}
 				else
 				{
@@ -184,12 +184,30 @@ namespace Chorus.merge.xml.generic
 																				   merger.MergeSituation, elementStrategy,
 																				   merger.MergeSituation.BetaUserId));
 					if (merger.MergeSituation.ConflictHandlingMode != MergeOrder.ConflictHandlingModeChoices.WeWin)
-						ours = theirs;
+					{
+						ReplaceOursWithTheirs(ourParent, ref ours, theirs);
+					}
 				}
 			}
 
 			// No changes.
 			// Route tested (x2).
+		}
+
+		internal static void ReplaceOursWithTheirs(XmlNode ourParent, ref XmlNode ours, XmlNode theirs)
+		{
+			if(ourParent == null)
+				throw new ArgumentNullException("ourParent");
+			var ourOwnerDocument = ours == null ? ourParent.OwnerDocument : ours.OwnerDocument;
+			if(ourOwnerDocument == null)
+				throw new ArgumentException("Nodes being worked with must be a part of a document.");
+			var theirData = theirs.Clone();
+			theirData = ourOwnerDocument.ImportNode(theirData, true);
+			if (ours == null)
+				ourParent.AppendChild(theirData);
+			else
+				ourParent.ReplaceChild(theirData, ours);
+			ours = theirData;
 		}
 	}
 }
