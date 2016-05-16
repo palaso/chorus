@@ -33,7 +33,8 @@ namespace LibChorus.Tests.merge.xml.generic
 			listener.AssertExpectedChangesCount(1);
 			listener.AssertFirstChangeType<XmlAdditionChangeReport>();
 			listener.AssertExpectedConflictCount(0);
-			Assert.AreSame(ours, theirs);
+			// This used to assert that they were the same, which is absolutely wrong, theirs came from a different document.
+			Assert.AreEqual(ours, theirs);
 			Assert.AreSame(ours, resultNode);
 		}
 
@@ -97,8 +98,9 @@ namespace LibChorus.Tests.merge.xml.generic
 			listener.AssertExpectedChangesCount(0);
 			listener.AssertExpectedConflictCount(1);
 			listener.AssertFirstConflictType<BothAddedMainElementButWithDifferentContentConflict>();
-			Assert.AreSame(theirs, resultNode);
-			Assert.AreSame(ours, theirs);
+			// The reference of theirs and the result can not be the same because the resultNode has been re-parented to our document
+			Assert.AreEqual(theirs, resultNode);
+			Assert.AreEqual(ours, theirs);
 		}
 
 		[Test]
@@ -178,7 +180,7 @@ namespace LibChorus.Tests.merge.xml.generic
 			var ancestor = CreateNode("<ImmutableElemment attr='originalvalue' />");
 			var ours = CreateNode("<ImmutableElemment attr='ourvalue' />");
 			var theirs = CreateNode("<ImmutableElemment attr='theirvalue' />");
-			merger.MergeInner(ref ours, theirs, ancestor);
+			merger.MergeInner(ours.ParentNode, ref ours, theirs, ancestor);
 			Assert.AreSame(ancestor, ours);
 			Assert.AreEqual("<ImmutableElemment attr=\"originalvalue\" />", ancestor.OuterXml);
 			listener.AssertExpectedChangesCount(0);
@@ -201,7 +203,7 @@ namespace LibChorus.Tests.merge.xml.generic
 			var ancestor = CreateNode("<MutableElemment attr='originalvalue' />");
 			var ours = CreateNode("<MutableElemment attr='ourvalue' />");
 			var theirs = CreateNode("<MutableElemment attr='originalvalue' />");
-			merger.MergeInner(ref ours, theirs, ancestor);
+			merger.MergeInner(ours.ParentNode, ref ours, theirs, ancestor);
 			Assert.AreNotSame(ancestor, ours);
 			Assert.AreEqual("<MutableElemment attr=\"ourvalue\" />", ours.OuterXml);
 			listener.AssertExpectedChangesCount(1);
@@ -217,10 +219,11 @@ namespace LibChorus.Tests.merge.xml.generic
 			{
 				EventListener = listener
 			};
-			ours = CreateNode(ourXml);
-			theirs = CreateNode(theirXml);
-			var ancestorNode = CreateNode(ancestorXml);
-			ImmutableElementMergeService.DoMerge(merger, ref ours, theirs, ancestorNode);
+			var ourParent = CreateNode("<ParentNode>" + ourXml + "</ParentNode>");
+			ours = ourParent.FirstChild;
+			theirs = CreateNode("<ParentNode>" + theirXml + "</ParentNode>").FirstChild;
+			var ancestorNode = CreateNode("<ParentNode>"+ ancestorXml + "</ParentNode>").FirstChild;
+			ImmutableElementMergeService.DoMerge(merger, ourParent, ref ours, theirs, ancestorNode);
 			return ours;
 		}
 

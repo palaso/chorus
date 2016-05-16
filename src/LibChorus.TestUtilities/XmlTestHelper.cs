@@ -149,7 +149,7 @@ namespace LibChorus.TestUtilities
 							{
 								MergeStrategies = mergeStrategies
 							};
-			var retval = merger.Merge(eventListener, ourNode, theirNode, ancestorNode).OuterXml;
+			var retval = merger.Merge(eventListener, ourNode.ParentNode, ourNode, theirNode, ancestorNode).OuterXml;
 			Assert.AreSame(eventListener, merger.EventListener); // Make sure it never changes it, while we aren't looking, since at least one Merge method does that very thing.
 
 			CheckMergeResults(retval, eventListener,

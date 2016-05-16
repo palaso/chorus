@@ -166,9 +166,7 @@ namespace Chorus.merge.xml.generic
 																		   mergeSituation.AlphaUserId));
 				return ours;
 			}
-
-			merger.MergeInner(ref ourChild, theirChild, ancestorChild);
-
+			merger.MergeInner(ours, ref ourChild, theirChild, ancestorChild);
 // Route tested. (UsingWith_NumberOfChildrenAllowed_ZeroOrOne_DoesNotThrowWhenParentHasOneChildNode)
 			return ours;
 		}
@@ -270,7 +268,7 @@ namespace Chorus.merge.xml.generic
 					{
 						merger.EventListener.ChangeOccurred(new XmlAdditionChangeReport(pathToFileInRepository, ourChild));
 						var ourChildReplacement = ourChild;
-						merger.MergeInner(ref ourChildReplacement, theirChild, null);
+						merger.MergeInner(ours, ref ourChildReplacement, theirChild, null);
 						if (!ReferenceEquals(ourChild, ourChildReplacement))
 						{
 							ours.ReplaceChild(ours.OwnerDocument.ImportNode(ourChildReplacement, true), ourChild);
@@ -291,7 +289,7 @@ namespace Chorus.merge.xml.generic
 					{
 						merger.EventListener.ChangeOccurred(new XmlAdditionChangeReport(pathToFileInRepository, theirChild));
 						var ourChildReplacement = ourChild;
-						merger.MergeInner(ref ourChildReplacement, theirChild, null);
+						merger.MergeInner(ours, ref ourChildReplacement, theirChild, null);
 						if (!ReferenceEquals(ourChild, ourChildReplacement))
 						{
 							ours.ReplaceChild(ours.OwnerDocument.ImportNode(ourChildReplacement, true), ourChild);
@@ -409,7 +407,7 @@ namespace Chorus.merge.xml.generic
 						if (XmlUtilities.AreXmlElementsEqual(ourChildClone, theirChildClone))
 						{
 							var ourChildReplacement = ourChild;
-							merger.MergeInner(ref ourChildReplacement, theirChild, null);
+							merger.MergeInner(ours, ref ourChildReplacement, theirChild, null);
 							if (!ReferenceEquals(ourChild, ourChildReplacement))
 							{
 								ours.ReplaceChild(ours.OwnerDocument.ImportNode(ourChildReplacement, true), ourChild);
@@ -430,7 +428,7 @@ namespace Chorus.merge.xml.generic
 						if (XmlUtilities.AreXmlElementsEqual(ourChildClone, theirChildClone))
 						{
 							var ourChildReplacement = ourChild;
-							merger.MergeInner(ref ourChildReplacement, theirChild, null);
+							merger.MergeInner(ours, ref ourChildReplacement, theirChild, null);
 							if (!ReferenceEquals(ourChild, ourChildReplacement))
 							{
 								ours.ReplaceChild(ours.OwnerDocument.ImportNode(ourChildReplacement, true), ourChild);
@@ -458,7 +456,7 @@ namespace Chorus.merge.xml.generic
 				{
 					merger.ConflictOccurred(new XmlTextBothAddedTextConflict(theirs.Name, theirs, ours, mergeSituation,
 																			 mainNodeStrategy, mergeSituation.BetaUserId));
-					ours = theirs;
+					MergeAtomicElementService.ReplaceOursWithTheirs(ours.ParentNode, ref ours, theirs);
 				}
 			}
 			return ours;
