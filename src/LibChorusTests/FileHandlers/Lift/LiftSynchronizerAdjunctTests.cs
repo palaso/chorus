@@ -1,6 +1,9 @@
-﻿using Chorus.FileTypeHandlers.lift;
+﻿using System.IO;
+using Chorus.FileTypeHandlers.lift;
 using NUnit.Framework;
 using SIL.IO;
+using SIL.TestUtilities;
+using SIL.WritingSystems.Tests;
 
 namespace LibChorus.Tests.FileHandlers.Lift
 {
@@ -23,6 +26,38 @@ namespace LibChorus.Tests.FileHandlers.Lift
 
 				// Verification
 				Assert.AreEqual("default", syncAdjunct.BranchName, "BranchName should be 'default' for LIFT0.13");
+			}
+		}
+
+		[Test]
+		public void CorrectlyReturnsDefaultBranchNameOnLdml2Files()
+		{
+			using (var liftProject = new TemporaryFolder("TempProj_LIFT"))
+			using (var liftFile = new TempFileFromFolder(liftProject, "proj.lift", testLift13File))
+			{
+				var wsDirectory = Directory.CreateDirectory(Path.Combine(Path.GetDirectoryName(liftFile.Path), "WritingSystems"));
+				using (var writingSystemsDir =
+					TempFileFromFolder.CreateAt(liftProject.Combine("WritingSystems", "lang.ldml"), LdmlContentForTests.Version2("en", "", "", "")))
+				{
+					var syncAdjunct = new LiftSynchronizerAdjunct(liftFile.Path);
+					Assert.AreEqual("default", syncAdjunct.BranchName, "BranchName should be 'default' with version 2 ldml files");
+				}
+			}
+		}
+
+		[Test]
+		public void CorrectlyAppendsLdmlVersion3ToBranchName()
+		{
+			using (var liftProject = new TemporaryFolder("TempProj_LIFT"))
+			using (var liftFile = new TempFileFromFolder(liftProject, "proj.lift", testLift13File))
+			{
+				var wsDirectory = Directory.CreateDirectory(Path.Combine(Path.GetDirectoryName(liftFile.Path), "WritingSystems"));
+				using (var writingSystemsDir =
+					TempFileFromFolder.CreateAt(liftProject.Combine("WritingSystems", "lang.ldml"), LdmlContentForTests.Version3("en", "", "", "")))
+				{
+					var syncAdjunct = new LiftSynchronizerAdjunct(liftFile.Path);
+					Assert.AreEqual("LIFT0.13_ldml3", syncAdjunct.BranchName, "BranchName should be 'LIFT0.13_ldml3' with version 3 ldml files");
+				}
 			}
 		}
 
