@@ -103,9 +103,8 @@ namespace Chorus.merge.xml.generic
 				parentIdx = _parentsToSearchIn.IndexOf(parentToSearchIn);
 				var childrenWithKeys = new Dictionary<string, XmlNode>(); // StringComparer.OrdinalIgnoreCase NO: Bad idea, since I (RBR) saw a case in a data file that had both upper and lower-cased variations.
 				_indexedSoughtAfterNodes.Add(parentIdx, childrenWithKeys);
-				var matchingName = nodeToMatch.Name;
-				var childrenWithKeyAttr = (from XmlNode childNode in parentToSearchIn.ChildNodes
-										   where childNode.Name == matchingName && childNode.Attributes[_keyAttribute] != null
+				var childrenWithKeyAttr = (from XmlNode childNode in parentToSearchIn.ChildNodes // the childNode may not be an actual node (i.e. whitespace)
+										   where childNode.Attributes != null && childNode.Attributes[_keyAttribute] != null
 										   select childNode).ToList();
 				foreach (var nodeWithKeyAttribute in childrenWithKeyAttr)
 				{
