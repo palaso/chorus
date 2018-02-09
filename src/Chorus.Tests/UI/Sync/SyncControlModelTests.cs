@@ -29,6 +29,20 @@ namespace Chorus.Tests
 				string.Format("Tasks timed out after {0} min.", timeout.TotalMinutes));
 		}
 
+		private void WaitForSyncToFinish(SyncResults results)
+		{
+			var start = DateTime.Now;
+			while (results == null)
+			{
+				Thread.Sleep(100);
+				Application.DoEvents(); //else the background worker may starve
+				if ((DateTime.Now.Subtract(start).Minutes > 0))
+				{
+					Assert.Fail("Gave up waiting.");
+				}
+			}
+		}
+
 		[SetUp]
 		public void Setup()
 		{
@@ -61,8 +75,7 @@ namespace Chorus.Tests
 		[Test]
 		public void InitiallyHasUsbTarget()
 		{
-			Assert.IsNotNull(_model.GetRepositoriesToList()[0].URI == "UsbKey");
-			// Assert.IsNotNull(_model.GetRepositoriesToList().Any(r => r.URI == "UsbKey"));
+			Assert.That(_model.GetRepositoriesToList()[0].URI, Is.EqualTo("UsbKey"));
 		}
 
 		[Test]
@@ -71,7 +84,8 @@ namespace Chorus.Tests
 			_synchronizer.ExtraRepositorySources.Clear();
 			_model = new SyncControlModel(_project, SyncUIFeatures.Advanced, null);
 			_model.AddMessagesDisplay(_progress);
-			Assert.AreEqual(1, _model.GetRepositoriesToList().Count);
+			Assert.That(_model.GetRepositoriesToList().Count, Is.EqualTo(1));
+			Assert.That(_model.GetRepositoriesToList()[0].URI, Is.EqualTo("UsbKey"));
 		}
 
 		[Test]
@@ -108,16 +122,8 @@ namespace Chorus.Tests
 			_model.SynchronizeOver += (sender, e) => results = sender as SyncResults;
 			_model.Sync(true);
 			// NOTE: we can't use AutoResetEvent with Sync() - for some reason this doesn't work
-			var start = DateTime.Now;
-			while (results == null)
-			{
-				Thread.Sleep(100);
-				Application.DoEvents(); //else the background worker may starve
-				if ((DateTime.Now.Subtract(start).Minutes > 1))
-				{
-					Assert.Fail("Gave up waiting.");
-				}
-			}
+			WaitForSyncToFinish(results);
+
 			Assert.IsFalse(results.Succeeded);
 			Assert.IsNotNull(results.ErrorEncountered);
 		}
@@ -136,16 +142,8 @@ namespace Chorus.Tests
 			Thread.Sleep(100);
 			_model.Cancel();
 			// NOTE: we can't use AutoResetEvent with Sync() - for some reason this doesn't work
-			var start = DateTime.Now;
-			while (results == null)
-			{
-				Thread.Sleep(100);
-				Application.DoEvents(); //else the background worker may starve
-				if ((DateTime.Now.Subtract(start).Minutes > 0))
-				{
-					Assert.Fail("Gave up waiting.");
-				}
-			}
+			WaitForSyncToFinish(results);
+
 			Assert.IsFalse(results.Succeeded);
 			Assert.IsTrue(results.Cancelled);
 			Assert.IsNull(results.ErrorEncountered);
@@ -187,12 +185,12 @@ namespace Chorus.Tests
 		public void AsyncLocalCheckIn_NoPreviousRepoCreation_Throws()
 		{
 			Assert.Throws<InvalidOperationException>(() =>
-										 {
-											 //simulate not having previously created a repository
-											 Palaso.IO.DirectoryUtilities.DeleteDirectoryRobust(
-												 _pathToTestRoot.CombineForPath(".hg"));
-											 _model.AsyncLocalCheckIn("testing", null);
-										 });
+										{
+											//simulate not having previously created a repository
+											Palaso.IO.DirectoryUtilities.DeleteDirectoryRobust(
+												_pathToTestRoot.CombineForPath(".hg"));
+											_model.AsyncLocalCheckIn("testing", null);
+										});
 		}
 	}
 }
