@@ -6,6 +6,9 @@ namespace Chorus.FileTypeHandlers.lift
 {
 	public static class LiftUtils
 	{
+		[Obsolete("Use LiftTimeFormatWithTimeZone instead, as LiftTimeFormatNoTimeZone produces incorrect results when used with DateTime.Now")]
+		public static string LiftTimeFormatNoTimeZone = "yyyy-MM-ddTHH:mm:ssZ";
+
 		public static string LiftTimeFormatWithTimeZone = "yyyy-MM-ddTHH:mm:ssK";
 
 		public static string GetId(XmlNode e)
@@ -62,7 +65,7 @@ namespace Chorus.FileTypeHandlers.lift
 		public static string GetUrl(XmlNode child, string unescaped, string label)
 		{
 			var url = GetUrl(child, unescaped);
-			if(string.IsNullOrEmpty(label))
+			if (string.IsNullOrEmpty(label))
 				return url;
 
 			// The call, above, to GetUrl, adds "&label=", and the provided "label" returns the same 'form' of the entry in its xpath,
