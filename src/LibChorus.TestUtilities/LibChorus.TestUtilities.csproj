@@ -31,11 +31,11 @@ See full changelog at https://github.com/sillsdev/chorus/blob/feature/nuget/CHAN
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="NUnit" Version="2.6.4" />
-    <PackageReference Include="SIL.Core" Version="7.0.0" />
+    <PackageReference Include="SIL.Core" Version="7.0.1-alpha0005" />
     <PackageReference Include="SIL.ReleaseTasks" Version="[2.2.0,)">
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
-    <PackageReference Include="SIL.TestUtilities" Version="7.0.0" />
+    <PackageReference Include="SIL.TestUtilities" Version="7.0.1-alpha0005" />
   </ItemGroup>
 
   <ItemGroup>

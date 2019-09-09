@@ -34,7 +34,7 @@ See full changelog at https://github.com/sillsdev/chorus/blob/feature/nuget/CHAN
     <PackageReference Include="SIL.ReleaseTasks" Version="[2.2.0,)">
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
-    <PackageReference Include="SIL.Windows.Forms" Version="7.0.0" />
+    <PackageReference Include="SIL.Windows.Forms" Version="7.0.1-alpha0005" />
     <PackageReference Include="Vulcan.Uczniowie.HelpProvider" Version="1.0.0" />
   </ItemGroup>
 
