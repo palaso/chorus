@@ -25,6 +25,7 @@
 		<Exec Command='$(NuGetCommand) install NUnit.Runners.Net4 -version 2.6.4 -solutionDirectory "$(RootDir)"' />
 		<Exec Command='$(NuGetCommand) install SIL.BuildTasks -excludeVersion -version 2.2.0 -solutionDirectory "$(RootDir)"' />
 		<Exec Command='$(NuGetCommand) install MSBuild.Extension.Pack -version 1.9.0 -solutionDirectory "$(RootDir)"' />
+		<Exec Command='$(NuGetCommand) install BuildDependencyTasks -excludeVersion -version 0.4.3 -solutionDirectory "$(RootDir)"' />
 	</Target>
 
 	<UsingTask TaskName="MakeWixForDirTree" AssemblyFile="$(RootDir)/packages/SIL.BuildTasks/tools/SIL.BuildTasks.dll" Condition="'$(OS)'=='Windows_NT'"/>
@@ -32,8 +33,14 @@
 	<UsingTask TaskName="FileUpdate" AssemblyFile="$(RootDir)/packages/SIL.BuildTasks/tools/SIL.BuildTasks.dll" />
 	<UsingTask TaskName="DNZip" AssemblyFile="$(RootDir)/packages/MSBuild.Extension.Pack.1.9.0/tools/net40/MSBuild.ExtensionPack.dll" />
 	<UsingTask TaskName="NUnit" AssemblyFile="$(RootDir)/packages/SIL.BuildTasks/tools/SIL.BuildTasks.dll" />
+	<UsingTask TaskName="Dependencies" AssemblyFile="$(SolutionDir)/packages/BuildDependencyTasks/BuildDependencyTasks.dll" />
 	<UsingTask TaskName="NUnitTeamCity" AssemblyFile="$(teamcity_dotnet_nunitlauncher_msbuild_task)" Condition=" '$(teamcity_version)' != '' And '$(OS)'=='Windows_NT'"/>
 	<UsingTask TaskName="NUnitTeamCity" AssemblyFile="$(agent_home_dir)/plugins/dotnetPlugin/bin/JetBrains.BuildServer.MSBuildLoggers.dll" Condition=" '$(teamcity_version)' != '' And '$(OS)'!='Windows_NT'"/>
+
+	<Target Name="DownloadDependencies">
+		<Dependencies DependencyFile="Chorus.dep" UseDependencyFile="true"
+			KeepJobsFile="true" WorkingDir="$(RootDir)" />
+	</Target>
 
 	<Target Name="Build">
 		<CallTarget Targets="RestoreBuildTasks" />
@@ -77,7 +84,7 @@
 		<Delete Files="@(ExistingInstallerFiles)" />
 	</Target>
 
-	<Target Name="Compile" DependsOnTargets="RestorePackages;UnzipMercurial">
+	<Target Name="Compile" DependsOnTargets="RestorePackages;UnzipMercurial;DownloadDependencies">
 		<MSBuild
 			Projects="$(SolutionPath)"
 			Targets="Build"
