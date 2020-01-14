@@ -2,18 +2,9 @@
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
     <Fragment>
         <DirectoryRef Id="MercurialExtensions">
-            <Component Id="MercurialExtensions.Dummy.txt" Guid="C6205DCE-8A61-4D8B-878A-DFABA113C88C">
-                <File Id="MercurialExtensions.Dummy.txt" Name="Dummy.txt" KeyPath="yes" Source="..\..\MercurialExtensions\Dummy.txt" />
-            </Component>
             <Directory Id="MercurialExtensions.fixutf8" Name="fixutf8">
-					<Component Id="MercurialExtensions.fixutf8..gitignore" Guid="A1C9937A-8A76-4CB6-8F74-0EDC59F745BF">
+                <Component Id="MercurialExtensions.fixutf8..gitignore" Guid="A1C9937A-8A76-4CB6-8F74-0EDC59F745BF">
                     <File Id="MercurialExtensions.fixutf8..gitignore" Name=".gitignore" KeyPath="yes" Source="..\..\MercurialExtensions\fixutf8\.gitignore" />
-                </Component>
-                <Component Id="MercurialExtensions.fixutf8..hgignore" Guid="DCC771FB-2B8E-4DC9-8D2F-4D8C076E6291">
-                    <File Id="MercurialExtensions.fixutf8..hgignore" Name=".hgignore" Source="..\..\MercurialExtensions\fixutf8\.hgignore" />
-                </Component>
-                <Component Id="MercurialExtensions.fixutf8..hg_archival.txt" Guid="40268CA2-46CA-418A-9CAB-10528C74C113">
-                    <File Id="MercurialExtensions.fixutf8..hg_archival.txt" Name=".hg_archival.txt" Source="..\..\MercurialExtensions\fixutf8\.hg_archival.txt" />
                 </Component>
                 <Component Id="MercurialExtensions.fixutf8.buildcpmap.py" Guid="229A890A-2903-4294-9B88-7D26DF158596">
                     <File Id="MercurialExtensions.fixutf8.buildcpmap.py" Name="buildcpmap.py" Source="..\..\MercurialExtensions\fixutf8\buildcpmap.py" />
@@ -54,10 +45,7 @@
             </Directory>
         </DirectoryRef>
         <ComponentGroup Id="MercurialExtensions">
-            <ComponentRef Id="MercurialExtensions.Dummy.txt" />
             <ComponentRef Id="MercurialExtensions.fixutf8..gitignore" />
-            <ComponentRef Id="MercurialExtensions.fixutf8..hgignore" />
-            <ComponentRef Id="MercurialExtensions.fixutf8..hg_archival.txt" />
             <ComponentRef Id="MercurialExtensions.fixutf8.buildcpmap.py" />
             <ComponentRef Id="MercurialExtensions.fixutf8.cpmap.pyc" />
             <ComponentRef Id="MercurialExtensions.fixutf8.fixutf8.py" />
