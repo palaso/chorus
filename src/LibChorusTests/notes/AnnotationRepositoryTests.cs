@@ -355,6 +355,11 @@ namespace LibChorus.Tests.notes
 		{
 			Deletions++;
 		}
+
+		public void NotifyOfStaleList()
+		{
+			throw new NotImplementedException();
+		}
 	}
 
 }
