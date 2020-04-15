@@ -1,13 +1,12 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
+using System.Net;
 using Chorus.Utilities;
 using Chorus.VcsDrivers;
 using Chorus.VcsDrivers.Mercurial;
 using L10NSharp;
 using SIL.Code;
-using SIL.Network;
 using SIL.Progress;
 
 namespace Chorus.Model
@@ -70,11 +69,10 @@ namespace Chorus.Model
 		public virtual void InitFromUri(string url)
 		{
 			SetServerLabelFromUrl(url);
-			Password = HttpUtilityFromMono.UrlDecode(UrlHelper.GetPassword(url));
-			AccountName = HttpUtilityFromMono.UrlDecode(UrlHelper.GetUserName(url));
-			ProjectId = HttpUtilityFromMono.UrlDecode(UrlHelper.GetPathAfterHost(url));
+			Password = WebUtility.UrlDecode(UrlHelper.GetPassword(url));
+			AccountName = WebUtility.UrlDecode(UrlHelper.GetUserName(url));
+			ProjectId = WebUtility.UrlDecode(UrlHelper.GetPathAfterHost(url));
 			CustomUrl = UrlHelper.GetPathOnly(url);
-			//CustomUrlSelected = true;
 		}
 
 		private void SetServerLabelFromUrl(string url)
@@ -113,13 +111,16 @@ namespace Chorus.Model
 				}
 
 				return SelectedServerModel.Protocol + "://" +
-					HttpUtilityFromMono.UrlEncode((string)AccountName) + ":" +
-					HttpUtilityFromMono.UrlEncode((string)Password) + "@" + SelectedServerModel.DomainName + "/" +
-					HttpUtilityFromMono.UrlEncode(ProjectId);
-				}
+					WebUtility.UrlEncode(AccountName) + ":" +
+					// UrlEncode encodes spaces as "+" and "+" as "%2b". LanguageDepot fails to decode plus-encoded spaces. Encode spaces as "%20"
+					WebUtility.UrlEncode(Password)?.Replace("+", "%20") + "@" + SelectedServerModel.DomainName + "/" +
+					WebUtility.UrlEncode(ProjectId);
 			}
+		}
 
 		public string CustomUrl { get; set; }
+
+		public bool HaveGoodUrl => HaveNeededAccountInfo;
 
 		public bool HaveNeededAccountInfo
 		{
@@ -128,26 +129,21 @@ namespace Chorus.Model
 				if (!NeedProjectDetails)
 					return true;
 
-					try
-					{
-						return !string.IsNullOrEmpty(ProjectId) &&
-							   !string.IsNullOrEmpty(AccountName) &&
-							   !string.IsNullOrEmpty(Password);
-					}
-					catch (Exception)
-					{
-						return false;
-					}
+				try
+				{
+					return !string.IsNullOrEmpty(ProjectId) &&
+						!string.IsNullOrEmpty(AccountName) &&
+						!string.IsNullOrEmpty(Password);
+				}
+				catch
+				{
+					return false;
 				}
 			}
+		}
 
 		public string Password { get; set; }
 		public string AccountName { get; set; }
-
-		public bool HaveGoodUrl
-		{
-			get { return HaveNeededAccountInfo; }
-		}
 
 		public ServerModel SelectedServerModel
 		{
@@ -167,10 +163,7 @@ namespace Chorus.Model
 			get; set;
 		}
 
-		public bool NeedProjectDetails
-		{
-			get { return !CustomUrlSelected; }
-		}
+		public bool NeedProjectDetails => !CustomUrlSelected;
 
 		public bool CustomUrlSelected
 		{
@@ -207,17 +200,16 @@ namespace Chorus.Model
 		{
 			get
 			{
-				if (CustomUrlSelected)
-				{
-					Uri uri;
-					if (Uri.TryCreate(URL, UriKind.Absolute, out uri) && !String.IsNullOrEmpty(uri.Host))
-						return uri.Host;
-						return "custom";
-					}
+				if (!CustomUrlSelected)
+					return SelectedServerLabel.Replace(" ", "");
 
-					return SelectedServerLabel.Replace(" ","");
-				}
+				Uri uri;
+				if (Uri.TryCreate(URL, UriKind.Absolute, out uri) && !String.IsNullOrEmpty(uri.Host))
+					return uri.Host;
+				return "custom";
+
 			}
+		}
 
 		/// <summary>
 		/// Use this to make use of, say, the contents of the clipboard (if it looks like a url)

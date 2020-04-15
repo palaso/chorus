@@ -93,36 +93,36 @@ namespace Chorus.UI.Misc
 			UpdateDisplay();
 		}
 
-		bool _spaceForTextBox;
+		//bool _spaceForTextBox;
 
 		/// <summary>
 		/// Record whether the incoming character was from the space bar key.
 		/// </summary>
-		private void _textbox_KeyDown(object sender, System.Windows.Forms.KeyEventArgs e)
+		private void _textbox_KeyDown(object sender, KeyEventArgs e)
 		{
-			if (e.KeyCode == Keys.Space)
-				_spaceForTextBox = true;
+			//if (e.KeyCode == Keys.Space)
+			//	_spaceForTextBox = true;
 		}
 
 		/// <summary>
 		/// If the incoming character is a space, ignore it.
 		/// </summary>
-		private void _textbox_KeyPress(object sender, System.Windows.Forms.KeyPressEventArgs e)
+		private void _textbox_KeyPress(object sender, KeyPressEventArgs e)
 		{
-			if (_spaceForTextBox)
-			{
-				e.Handled = true;
-				_spaceForTextBox = false;
-			}
-			else if (Char.IsWhiteSpace(e.KeyChar))
-			{
-				e.Handled = true;
-			}
+			//if (_spaceForTextBox)
+			//{
+			//	e.Handled = true;
+			//	_spaceForTextBox = false;
+			//}
+			//else if (Char.IsWhiteSpace(e.KeyChar))
+			//{
+			//	e.Handled = true;
+			//}
 		}
 
 		private void _password_TextChanged(object sender, EventArgs e)
 		{
-			Model.Password = _password.Text.Trim();
+			Model.Password = _password.Text;//.Trim();
 			UpdateDisplay();
 		}
 
