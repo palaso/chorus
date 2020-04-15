@@ -78,59 +78,51 @@ cd -
 #     revision: latest.lastSuccessful
 #     paths: {"*.chm"=>"lib"}
 #     VCS: https://github.com/sillsdev/chorushelp.git [master]
-# [1] build: Helpprovider (bt225)
-#     project: Helpprovider
-#     URL: https://build.palaso.org/viewType.html?buildTypeId=bt225
-#     clean: false
-#     revision: latest.lastSuccessful
-#     paths: {"Vulcan.Uczniowie.HelpProvider.dll"=>"lib/common"}
-#     VCS: https://github.com/sillsdev/helpprovider.git [refs/heads/master]
-# [2] build: icu4c-54-win32-minimal (bt471)
+# [1] build: icu4c-54-win32-minimal (bt471)
 #     project: Libraries
 #     URL: https://build.palaso.org/viewType.html?buildTypeId=bt471
 #     clean: false
 #     revision: latest.lastSuccessful
 #     paths: {"*.dll"=>"lib/Debug"}
-# [3] build: icu4c-54-win32-minimal (bt471)
+# [2] build: icu4c-54-win32-minimal (bt471)
 #     project: Libraries
 #     URL: https://build.palaso.org/viewType.html?buildTypeId=bt471
 #     clean: false
 #     revision: latest.lastSuccessful
 #     paths: {"*.dll"=>"lib/Release"}
-# [4] build: icucil-win32-default Continuous (bt14)
+# [3] build: icucil-win32-default Continuous (bt14)
 #     project: Libraries
 #     URL: https://build.palaso.org/viewType.html?buildTypeId=bt14
 #     clean: false
 #     revision: latest.lastSuccessful
 #     paths: {"icu*.dll"=>"lib/Release"}
 #     VCS: https://github.com/sillsdev/icu-dotnet [master]
-# [5] build: icucil-win32-default Continuous (bt14)
+# [4] build: icucil-win32-default Continuous (bt14)
 #     project: Libraries
 #     URL: https://build.palaso.org/viewType.html?buildTypeId=bt14
 #     clean: false
 #     revision: latest.lastSuccessful
 #     paths: {"icu*.dll"=>"lib/Debug"}
 #     VCS: https://github.com/sillsdev/icu-dotnet [master]
-# [6] build: palaso-win32-master Continuous (Libpalaso_PalasoWin32masterContinuous)
+# [5] build: palaso-win32-master Continuous (Libpalaso_PalasoWin32masterContinuous)
 #     project: libpalaso
 #     URL: https://build.palaso.org/viewType.html?buildTypeId=Libpalaso_PalasoWin32masterContinuous
 #     clean: false
 #     revision: latest.lastSuccessful
 #     paths: {"debug/SIL.Core.dll"=>"lib/Debug", "debug/SIL.Core.pdb"=>"lib/Debug", "debug/SIL.Core.Desktop.dll"=>"lib/Debug", "debug/SIL.Core.Desktop.pdb"=>"lib/Debug", "debug/SIL.TestUtilities.dll"=>"lib/Debug", "debug/SIL.TestUtilities.pdb"=>"lib/Debug", "debug/SIL.Windows.Forms.dll"=>"lib/Debug", "debug/SIL.Windows.Forms.pdb"=>"lib/Debug", "debug/SIL.Windows.Forms.GeckoBrowserAdapter.dll"=>"lib/Debug", "debug/SIL.Windows.Forms.GeckoBrowserAdapter.pdb"=>"lib/Debug", "debug/SIL.Lift.dll"=>"lib/Debug", "debug/SIL.Lift.pdb"=>"lib/Debug", "debug/SIL.WritingSystems.dll"=>"lib/Debug", "debug/SIL.WritingSystems.pdb"=>"lib/Debug", "debug/SIL.WritingSystems.Tests.dll"=>"lib/Debug", "debug/SIL.WritingSystems.Tests.pdb"=>"lib/Debug", "debug/L10NSharp.dll"=>"lib/Debug", "debug/L10NSharp.pdb"=>"lib/Debug"}
-#     VCS: https://github.com/sillsdev/libpalaso.git [master]
-# [7] build: palaso-win32-master Continuous (Libpalaso_PalasoWin32masterContinuous)
+#     VCS: https://github.com/sillsdev/libpalaso.git [refs/heads/master]
+# [6] build: palaso-win32-master Continuous (Libpalaso_PalasoWin32masterContinuous)
 #     project: libpalaso
 #     URL: https://build.palaso.org/viewType.html?buildTypeId=Libpalaso_PalasoWin32masterContinuous
 #     clean: false
 #     revision: latest.lastSuccessful
 #     paths: {"SIL.Core.dll"=>"lib/Release", "SIL.Core.Desktop.dll"=>"lib/Release", "SIL.Lift.dll"=>"lib/Release", "SIL.TestUtilities.dll"=>"lib/Release", "SIL.Windows.Forms.dll"=>"lib/Release", "SIL.Windows.Forms.GeckoBrowserAdapter.dll"=>"lib/Release", "SIL.WritingSystems.dll"=>"lib/Release", "SIL.WritingSystems.Tests.dll"=>"lib/Release", "L10NSharp.dll"=>"lib/Release"}
-#     VCS: https://github.com/sillsdev/libpalaso.git [master]
+#     VCS: https://github.com/sillsdev/libpalaso.git [refs/heads/master]
 
 # make sure output directories exist
 mkdir -p ../lib
 mkdir -p ../lib/Debug
 mkdir -p ../lib/Release
-mkdir -p ../lib/common
 
 # download artifact dependencies
 copy_auto http://build.palaso.org/guestAuth/repository/download/bt216/latest.lastSuccessful/Chorus_Help.chm ../lib/Chorus_Help.chm

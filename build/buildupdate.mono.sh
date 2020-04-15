@@ -71,39 +71,31 @@ cd -
 # URL: https://build.palaso.org/viewType.html?buildTypeId=Chorus_Linux64masterContinuous
 # VCS: https://github.com/sillsdev/chorus.git [master]
 # dependencies:
-# [0] build: Helpprovider (bt225)
-#     project: Helpprovider
-#     URL: https://build.palaso.org/viewType.html?buildTypeId=bt225
-#     clean: false
-#     revision: latest.lastSuccessful
-#     paths: {"Vulcan.Uczniowie.HelpProvider.dll"=>"lib/common"}
-#     VCS: https://github.com/sillsdev/helpprovider.git [refs/heads/master]
-# [1] build: icucil-linux64-Continuous (bt281)
+# [0] build: icucil-linux64-Continuous (bt281)
 #     project: Libraries
 #     URL: https://build.palaso.org/viewType.html?buildTypeId=bt281
 #     clean: false
 #     revision: latest.lastSuccessful
 #     paths: {"*.dll"=>"lib/ReleaseMono", "*.config"=>"lib/ReleaseMono"}
 #     VCS: https://github.com/sillsdev/icu-dotnet [master]
-# [2] build: icucil-linux64-Continuous (bt281)
+# [1] build: icucil-linux64-Continuous (bt281)
 #     project: Libraries
 #     URL: https://build.palaso.org/viewType.html?buildTypeId=bt281
 #     clean: false
 #     revision: latest.lastSuccessful
 #     paths: {"*.dll"=>"lib/DebugMono", "*.config"=>"lib/DebugMono"}
 #     VCS: https://github.com/sillsdev/icu-dotnet [master]
-# [3] build: palaso-linux64-master Continuous (Libpalaso_PalasoLinux64masterContinuous)
+# [2] build: palaso-linux64-master Continuous (Libpalaso_PalasoLinux64masterContinuous)
 #     project: libpalaso
 #     URL: https://build.palaso.org/viewType.html?buildTypeId=Libpalaso_PalasoLinux64masterContinuous
 #     clean: false
 #     revision: latest.lastSuccessful
 #     paths: {"NDesk.DBus.dll*"=>"lib/ReleaseMono", "SIL.Core.dll"=>"lib/ReleaseMono", "SIL.Core.Desktop.dll"=>"lib/ReleaseMono", "SIL.TestUtilities.dll"=>"lib/ReleaseMono", "SIL.Windows.Forms.dll"=>"lib/ReleaseMono", "SIL.Windows.Forms.GeckoBrowserAdapter.dll"=>"lib/ReleaseMono", "SIL.Lift.dll"=>"lib/ReleaseMono", "SIL.WritingSystems.dll"=>"lib/ReleaseMono", "SIL.WritingSystems.Tests.dll"=>"lib/ReleaseMono", "L10NSharp.dll"=>"lib/ReleaseMono", "debug/NDesk.DBus.dll*"=>"lib/DebugMono", "debug/SIL.Core.dll"=>"lib/DebugMono", "debug/SIL.Core.pdb"=>"lib/DebugMono", "debug/SIL.Core.Desktop.dll"=>"lib/DebugMono", "debug/SIL.Core.Desktop.pdb"=>"lib/DebugMono", "debug/SIL.TestUtilities.dll"=>"lib/DebugMono", "debug/SIL.TestUtilities.pdb"=>"lib/DebugMono", "debug/SIL.Windows.Forms.dll"=>"lib/DebugMono", "debug/SIL.Windows.Forms.pdb"=>"lib/DebugMono", "debug/SIL.Windows.Forms.GeckoBrowserAdapter.dll"=>"lib/DebugMono", "debug/SIL.Windows.Forms.GeckoBrowserAdapter.pdb"=>"lib/DebugMono", "debug/SIL.Lift.dll"=>"lib/DebugMono", "debug/SIL.Lift.pdb"=>"lib/DebugMono", "debug/SIL.WritingSystems.dll"=>"lib/DebugMono", "debug/SIL.WritingSystems.pdb"=>"lib/DebugMono", "debug/SIL.WritingSystems.Tests.dll"=>"lib/DebugMono", "debug/SIL.WritingSystems.Tests.pdb"=>"lib/DebugMono", "debug/L10NSharp.dll"=>"lib/DebugMono"}
-#     VCS: https://github.com/sillsdev/libpalaso.git [master]
+#     VCS: https://github.com/sillsdev/libpalaso.git [refs/heads/master]
 
 # make sure output directories exist
 mkdir -p ../lib/DebugMono
 mkdir -p ../lib/ReleaseMono
-mkdir -p ../lib/common
 
 # download artifact dependencies
 copy_auto http://build.palaso.org/guestAuth/repository/download/bt281/latest.lastSuccessful/icu.net.dll ../lib/ReleaseMono/icu.net.dll
