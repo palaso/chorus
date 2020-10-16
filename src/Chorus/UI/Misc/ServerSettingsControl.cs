@@ -2,6 +2,7 @@ using System;
 using System.ComponentModel;
 using System.Windows.Forms;
 using Chorus.Model;
+using SIL.Extensions;
 
 
 namespace Chorus.UI.Misc
@@ -54,6 +55,17 @@ namespace Chorus.UI.Misc
 			_projectIdLabel.Visible = _projectId.Visible = !Model.CustomUrlSelected && Model.HasLoggedIn;
 
 			DisplayUpdated?.Invoke(this, null);
+		}
+
+		private void UpdateProjectIds()
+		{
+			var currentVal = Model.ProjectId;
+			_projectId.Items.Clear();
+			_projectId.Items.AddRange(Model.AvailableProjects);
+			if (!string.IsNullOrEmpty(currentVal) && Model.AvailableProjects.Contains(currentVal, StringComparison.Ordinal))
+			{
+				_projectId.SelectedItem = currentVal;
+			}
 		}
 
 		private void _customUrl_TextChanged(object sender, EventArgs e)
@@ -128,7 +140,8 @@ namespace Chorus.UI.Misc
 
 		private void _buttonLogIn_Click(object sender, EventArgs e)
 		{
-			Model.HasLoggedIn = !Model.HasLoggedIn; // TODO (Hasso) actually log in
+			Model.LogIn();
+			UpdateProjectIds();
 			UpdateDisplay();
 		}
 	}

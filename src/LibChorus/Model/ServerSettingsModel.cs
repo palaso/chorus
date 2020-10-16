@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
+using System.Text;
 using System.Web;
 using Chorus.Utilities;
 using Chorus.VcsDrivers;
@@ -15,6 +17,9 @@ namespace Chorus.Model
 {
 	public class ServerSettingsModel
 	{
+		#region static and constant
+		private const string EntropyValue = "LAMED videte si est dolor sicut dolor meus";
+
 		internal enum BandwidthEnum
 		{
 			Low, High
@@ -37,13 +42,20 @@ namespace Chorus.Model
 			// TODO (Hasso) 2020.10: override Equals and GetHashCode?
 		}
 
-		private string _pathToRepo;
-
 		public static readonly BandwidthItem[] Bandwidths;
 
 		static ServerSettingsModel()
 		{
 			Bandwidths = new[] {new BandwidthItem(BandwidthEnum.Low), new BandwidthItem(BandwidthEnum.High)};
+		}
+		#endregion static and constant
+
+		private string _pathToRepo;
+
+		public ServerSettingsModel()
+		{
+			Username = Properties.Settings.Default.LanguageForgeUser;
+			Password = DecryptPassword(Properties.Settings.Default.LanguageForgePass);
 		}
 
 		//	Servers.Add("LanguageDepot.org []", new ServerModel("resumable.languagedepot.org"));
@@ -73,9 +85,14 @@ namespace Chorus.Model
 
 		public virtual void InitFromUri(string url)
 		{
-			Password = HttpUtilityFromMono.UrlDecode(UrlHelper.GetPassword(url));
-			Username = HttpUtilityFromMono.UrlDecode(UrlHelper.GetUserName(url));
+			var urlUsername = HttpUtilityFromMono.UrlDecode(UrlHelper.GetUserName(url));
+			if (!string.IsNullOrEmpty(urlUsername))
+			{
+				Username = urlUsername;
+				Password = HttpUtilityFromMono.UrlDecode(UrlHelper.GetPassword(url));
+			}
 			ProjectId = HttpUtilityFromMono.UrlDecode(UrlHelper.GetPathAfterHost(url));
+			// TODO (Hasso): Bandwidth
 			CustomUrl = UrlHelper.GetPathOnly(url);
 		}
 
@@ -89,13 +106,13 @@ namespace Chorus.Model
 				}
 
 				return "https://" +
-					HttpUtilityFromMono.UrlEncode(Username) + ":" +
-					HttpUtilityFromMono.UrlEncode(Password) + "@" +
 					//"{0}.LanguageForge.org/" +
-					"resumable.languagedepot.org/" +
+					Domain + "/" +
 					HttpUtilityFromMono.UrlEncode(ProjectId);
-				}
 			}
+		}
+
+		internal string Domain => "resumable.languagedepot.org";
 
 
 		public bool HaveGoodUrl => true; // TODO
@@ -124,6 +141,7 @@ namespace Chorus.Model
 		public string CustomUrl { get; set; }
 		public BandwidthItem Bandwidth { get; set; } = Bandwidths[0];
 		public string ProjectId { get; set; }
+		public string[] AvailableProjects { get; private set; } = new string[0];
 
 		/// <summary>
 		/// True if the user has logged in since this ServerSettingsModel was created, or has already connected this project to an internet server.
@@ -147,12 +165,64 @@ namespace Chorus.Model
 			var repo = HgRepository.CreateOrUseExisting(_pathToRepo, new NullProgress());
 
 			// Use safer SetTheOnlyAddressOfThisType method, as it won't clobber a shared network setting, if that was the clone source.
-			repo.SetTheOnlyAddressOfThisType(new HttpRepositoryPath(AliasName, URL, false));
+			repo.SetTheOnlyAddressOfThisType(CreateRepositoryAddress(AliasName));
+
+			SaveUserSettings();
+		}
+
+		protected RepositoryAddress CreateRepositoryAddress(string name)
+		{
+			return new HttpRepositoryPath(name, URL, false, Username, Password, Bandwidth.Value == BandwidthEnum.Low);
+		}
+
+		private void SaveUserSettings()
+		{
+			Properties.Settings.Default.LanguageForgeUser = Username;
+			Properties.Settings.Default.LanguageForgePass = EncryptPassword(Password);
+			Properties.Settings.Default.Save();
+		}
+
+		public void LogIn()
+		{
+			HasLoggedIn = !HasLoggedIn; // TODO (Hasso) actually log in
+			AvailableProjects = new[] {"sample", "data"};
+			SaveUserSettings();
 		}
 
 		public string AliasName
 		{
-			get { throw new NotImplementedException(); }
+			get
+			{
+				if (CustomUrlSelected)
+				{
+					Uri uri;
+					if (Uri.TryCreate(URL, UriKind.Absolute, out uri) && !string.IsNullOrEmpty(uri.Host))
+						return uri.Host;
+					return "custom";
+				}
+
+				return Domain;
+			}
+		}
+
+		internal static string EncryptPassword(string encryptMe)
+		{
+			if (string.IsNullOrEmpty(encryptMe))
+			{
+				return encryptMe;
+			}
+			byte[] encryptedData = ProtectedData.Protect(Encoding.Unicode.GetBytes(encryptMe), Encoding.Unicode.GetBytes(EntropyValue), DataProtectionScope.CurrentUser);
+			return Convert.ToBase64String(encryptedData);
+		}
+
+		internal static string DecryptPassword(string decryptMe)
+		{
+			if (string.IsNullOrEmpty(decryptMe))
+			{
+				return decryptMe;
+			}
+			byte[] decryptedData = ProtectedData.Unprotect(Convert.FromBase64String(decryptMe), Encoding.Unicode.GetBytes(EntropyValue), DataProtectionScope.CurrentUser);
+			return Encoding.Unicode.GetString(decryptedData);
 		}
 
 		/// <summary>
