@@ -17,6 +17,10 @@
     <NoWarn>1591</NoWarn>
     <UseFullSemVerForNuGet>false</UseFullSemVerForNuGet>
     <IsPackable>false</IsPackable>
+    <!-- We have to explicitly set PlatformTarget because we indirectly depend on LibChorus which
+    depends on icu4c which has platform dependent binaries, so msbuild decides that ChorusMerge
+    is platform specific, regardless of the actual platform target -->
+    <PlatformTarget>AnyCPU</PlatformTarget>
   </PropertyGroup>
 
   <ItemGroup>

@@ -17,6 +17,10 @@
     <NoWarn>1591</NoWarn>
     <UseFullSemVerForNuGet>false</UseFullSemVerForNuGet>
     <IsPackable>false</IsPackable>
+    <!-- We have to explicitly set PlatformTarget because we depend on LibChorus which depends on
+    Mercurial which has platform dependent binaries, so msbuild decides that this executable will
+    be platform specific -->
+    <PlatformTarget>AnyCPU</PlatformTarget>
   </PropertyGroup>
 
   <ItemGroup>
