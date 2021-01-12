@@ -16,7 +16,7 @@ namespace LibChorus.Tests.Model
 		{
 			var m = new ServerSettingsModel();
 			m.InitFromUri("http://joe:pass@hg-public.languagedepot.org/tpi");
-			Assert.AreEqual("joe",m.Username);
+			Assert.AreEqual("joe", m.Username);
 		}
 
 		[Test]
@@ -130,6 +130,60 @@ namespace LibChorus.Tests.Model
 			Assert.AreEqual("jan", m.Username);
 			Assert.AreEqual("pass", m.Password);
 			Assert.AreEqual("tps", m.ProjectId);
+		}
+
+		[Test]
+		public void PopulateAvailableProjects()
+		{
+			const string id1 = "nko";
+			const string id2 = "atinlay-dictionary";
+			const string id3 = "wra-ramo-dict";
+			const string json = @"[
+			{
+				 ""identifier"":""" + id1 + @""",
+				 ""name"":""Nkonya 2011"",
+				 ""repository"":""http:\/\/public.languagedepot.org"",
+				 ""role"":""unknown""
+			},
+			{
+				 ""identifier"":""" + id2 + @""",
+				 ""name"":""Atinlay Dictionary"",
+				 ""repository"":""http:\/\/public.languagedepot.org"",
+				 ""role"":""manager""
+			},
+			{
+				 ""identifier"":""" + id3 + @""",
+				 ""name"":""Ramo Dictionary"",
+				 ""repository"":""http:\/\/public.languagedepot.org"",
+				 ""role"":""unknown""
+			}]";
+
+			var m = new ServerSettingsModel();
+
+			// SUT
+			m.PopulateAvailableProjects(json);
+
+			Assert.AreEqual(3, m.AvailableProjects.Length, "number of available projects");
+			CollectionAssert.Contains(m.AvailableProjects, id1);
+			CollectionAssert.Contains(m.AvailableProjects, id2);
+			CollectionAssert.Contains(m.AvailableProjects, id3);
+		}
+
+		[Test]
+		public void PopulateAvailableProjects_ToleratesMissingProperties()
+		{
+			const string id = "nko";
+			const string json = @"[{
+				 ""identifier"":""" + id + @"""
+			}]";
+
+			var m = new ServerSettingsModel();
+
+			// SUT
+			m.PopulateAvailableProjects(json);
+
+			Assert.AreEqual(1, m.AvailableProjects.Length, "number of available projects");
+			CollectionAssert.Contains(m.AvailableProjects, id);
 		}
 
 		[Test]
